@@ -4,7 +4,7 @@ return [
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
     'allowed_methods' => ['*'],
     'allowed_origins' => [
-        'https://www.api-scholar.site', // <-- Replace with your real frontend URL
+        'https://tripwise-front.vercel.app', // <-- Replace with your real frontend URL
         'http://localhost:3000', // (optional) for local dev
     ],
     'allowed_origins_patterns' => [],
