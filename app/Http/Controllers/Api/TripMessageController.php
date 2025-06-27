@@ -35,7 +35,7 @@ class TripMessageController extends Controller
         $message->load('user:id,name');
         broadcast(new NewTripMessage($message))->toOthers();
 
-        return response()->json(['status' => 'sent']);
+        return response()->json($message, 201);
     }
 
     public function typing(Request $request, Trip $trip)
@@ -43,6 +43,6 @@ class TripMessageController extends Controller
         $this->authorize('view', $trip);
         $user = $request->user();
         broadcast(new \App\Events\TripChatTyping($trip->id, $user))->toOthers();
-        return response()->json(['status' => 'typing']);
+        return response()->json($message, 201);
     }
 }
