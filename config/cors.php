@@ -6,7 +6,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [env('FRONTEND_URL', 'http://api-scholar.site') ,env('FRONTEND_LOCAL_URL', 'http://localhost:3000') ],
+    'allowed_origins' => [env('FRONTEND_URL', 'http://www.api-scholar.site') ,env('FRONTEND_LOCAL_URL', 'http://localhost:3000') ],
 
     'allowed_origins_patterns' => [],
 
