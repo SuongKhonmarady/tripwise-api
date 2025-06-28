@@ -8,6 +8,8 @@ return [
     'allowed_origins' => [
         'https://tripwise-front.vercel.app',
         'http://localhost:5173',
+        'https://tosderleng.tech',
+        'https://www.tosderleng.tech',
     ],
     'allowed_origins_patterns' => [],
 
