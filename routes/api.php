@@ -72,6 +72,7 @@ Route::middleware('auth:sanctum')->group(function () {
         
         // Trip Chat Messages
         Route::get('/messages', [TripMessageController::class, 'index']);
+        Route::get('/messages/last', [TripMessageController::class, 'lastMessage']);
         Route::post('/messages', [TripMessageController::class, 'store']);
         Route::post('/typing', [TripMessageController::class, 'typing']);
     });

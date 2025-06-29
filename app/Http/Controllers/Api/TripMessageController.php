@@ -13,10 +13,29 @@ class TripMessageController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index(Trip $trip)
+    public function index(Request $request, Trip $trip)
     {
         $this->authorize('view', $trip);
-        return $trip->messages()->with('user:id,name')->latest()->take(50)->get()->reverse()->values();
+
+        $limit = (int) $request->query('limit', 5);
+        $beforeId = $request->query('before_id');
+
+        $query = $trip->messages()->with('user:id,name')->latest();
+        if ($beforeId) {
+            $query->where('id', '<', $beforeId);
+        }
+        $messages = $query->take($limit)->get()->reverse()->values();
+        return response()->json($messages);
+    }
+
+    /**
+     * Get the last message in a group chat (trip)
+     */
+    public function lastMessage(Trip $trip)
+    {
+        $this->authorize('view', $trip);
+        $message = $trip->messages()->with('user:id,name')->latest()->first();
+        return response()->json($message);
     }
 
     public function store(Request $request, Trip $trip)
