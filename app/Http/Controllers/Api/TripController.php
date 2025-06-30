@@ -56,6 +56,8 @@ class TripController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
             'budget' => 'nullable|numeric|min:0',
             'currency' => 'nullable|string|max:3',
+            'participants' => 'nullable|array',
+            'participants.*' => 'email',
         ]);
 
         if ($validator->fails()) {
@@ -85,6 +87,31 @@ class TripController extends Controller
             'status' => 'accepted',
             'joined_at' => now(),
         ]);
+
+        // Invite participants by email if provided (like invite user flow)
+        if ($request->has('participants')) {
+            foreach ($request->participants as $email) {
+                if (filter_var($email, FILTER_VALIDATE_EMAIL) && $email !== $request->user()->email) {
+                    $user = \App\Models\User::where('email', $email)->first();
+                    if ($user) {
+                        // Check if already a participant
+                        $existing = TripParticipant::where('trip_id', $trip->id)
+                            ->where('user_id', $user->id)
+                            ->first();
+                        if (!$existing) {
+                            TripParticipant::create([
+                                'trip_id' => $trip->id,
+                                'user_id' => $user->id,
+                                'role' => 'participant',
+                                'status' => 'pending',
+                                'invited_at' => now(),
+                            ]);
+                        }
+                    }
+                    // Optionally, send invitation email if user not found
+                }
+            }
+        }
 
         $trip->load(['participants', 'expenses', 'itineraries']);
 
