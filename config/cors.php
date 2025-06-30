@@ -10,6 +10,7 @@ return [
         'http://localhost:5173',
         'https://tosderleng.tech',
         'https://www.tosderleng.tech',
+        'http://localhost:3000/',
     ],
     'allowed_origins_patterns' => [],
 
