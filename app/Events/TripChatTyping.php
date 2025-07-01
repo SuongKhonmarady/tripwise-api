@@ -7,6 +7,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class TripChatTyping implements ShouldBroadcast
 {
@@ -19,6 +20,8 @@ class TripChatTyping implements ShouldBroadcast
     {
         $this->tripId = $tripId;
         $this->user = $user;
+        
+        Log::info("TripChatTyping event created for user {$user->id} in trip {$tripId}");
     }
 
     public function broadcastOn()
@@ -37,7 +40,10 @@ class TripChatTyping implements ShouldBroadcast
             'user' => [
                 'id' => $this->user->id,
                 'name' => $this->user->name,
-            ]
+                'email' => $this->user->email ?? null,
+            ],
+            'trip_id' => $this->tripId,
+            'timestamp' => now()->toISOString(),
         ];
     }
 }

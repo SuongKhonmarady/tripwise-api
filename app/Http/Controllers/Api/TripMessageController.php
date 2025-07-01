@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Events\NewTripMessage;
+use App\Events\TripChatTyping;
 use App\Http\Controllers\Controller;
 use App\Models\Trip;
 use App\Models\TripMessage;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TripMessageController extends Controller
 {
@@ -59,9 +61,32 @@ class TripMessageController extends Controller
 
     public function typing(Request $request, Trip $trip)
     {
-        $this->authorize('view', $trip);
-        $user = $request->user();
-        broadcast(new \App\Events\TripChatTyping($trip->id, $user))->toOthers();
-        return response()->json($message, 201);
+        try {
+            $this->authorize('view', $trip);
+            $user = $request->user();
+            
+            Log::info("User {$user->id} ({$user->name}) is typing in trip {$trip->id}");
+            
+            broadcast(new TripChatTyping($trip->id, $user))->toOthers();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Typing indicator sent',
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                ],
+                'trip_id' => $trip->id
+            ], 200);
+            
+        } catch (\Exception $e) {
+            Log::error("Error sending typing indicator: " . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to send typing indicator',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }
