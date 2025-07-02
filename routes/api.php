@@ -24,6 +24,9 @@ use App\Http\Controllers\Api\TripMessageController;
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/auth/google', [AuthController::class, 'googleAuth']);
+Route::post('/verify-email', [AuthController::class, 'verifyEmail']);
+Route::post('/resend-verification', [AuthController::class, 'resendVerification']);
 
 // Categories (public access for better UX)
 Route::get('/categories', [CategoryController::class, 'index']);
